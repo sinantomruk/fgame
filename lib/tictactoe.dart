@@ -135,10 +135,6 @@ class _TicTacToePageState extends State<TicTacToePage> {
   }
 
   void _checkWinner() {
-    if (fillCount >= 9) {
-      _showDrawDialog();
-    }
-
     // Rows checks
     if (displayElement[0] == displayElement[1] &&
         displayElement[0] == displayElement[2] &&
@@ -178,6 +174,11 @@ class _TicTacToePageState extends State<TicTacToePage> {
         displayElement[2] == displayElement[6] &&
         displayElement[2] != '') {
       _showWinDialog(displayElement[2]);
+    }
+
+    // Draw check
+    else if (fillCount >= 9) {
+      _showDrawDialog();
     }
   }
 
