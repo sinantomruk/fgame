@@ -170,14 +170,9 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
         ),
       );
       this.squaresLeft -= 1;
-      _handleTap(x, y - 1);
-      _handleTap(x + 1, y - 1);
-      _handleTap(x + 1, y);
-      _handleTap(x + 1, y + 1);
-      _handleTap(x, y + 1);
-      _handleTap(x - 1, y + 1);
-      _handleTap(x - 1, y);
-      _handleTap(x - 1, y - 1);
+      sqr.adjacents.forEach((s) {
+        this._handleTap(s.xCoordinate, s.yCoordinate);
+      });
     } else {
       setState(() {
         sqr.isOpened = true;
@@ -277,6 +272,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
       sqr.bombsAround = 0;
       sqr.hasBomb = false;
       sqr.isOpened = false;
+      sqr.isFlagged = false;
       sqr.content = Text(
         "",
         style: TextStyle(
