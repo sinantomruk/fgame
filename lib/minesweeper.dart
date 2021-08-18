@@ -67,6 +67,10 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                   BoardSquare sqr = this.board[y][x];
                   return GestureDetector(
                     onTap: () => _handleTap(x, y),
+                    onLongPress: () {
+                      sqr.content = Icon(Icons.flag);
+                      setState(() {});
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         color: sqr.isOpened ? Colors.deepPurple : Colors.black,
@@ -97,13 +101,35 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
     if (sqr.isOpened) {
       return;
     } else if (sqr.hasBomb) {
-      setState(() {
-        sqr.isOpened = true;
-        sqr.content = Icon(Icons.gps_fixed);
-      });
+      this.board.forEach(
+        (element) {
+          element.forEach(
+            (s) {
+              s.isOpened = true;
+              s.content = s.hasBomb
+                  ? Icon(Icons.gps_fixed)
+                  : Text(
+                      sqr.bombsAround.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 35,
+                      ),
+                    );
+            },
+          );
+        },
+      );
+      setState(() {});
       _showDialog(false);
     } else if (sqr.bombsAround == 0) {
       sqr.isOpened = true;
+      sqr.content = Text(
+        "",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 35,
+        ),
+      );
       this.squaresLeft -= 1;
       _handleTap(x, y - 1);
       _handleTap(x + 1, y - 1);
