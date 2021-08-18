@@ -91,7 +91,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                   BoardSquare sqr = this.board[y][x];
                   return GestureDetector(
                     onTap: () => _handleTap(x, y),
-                    onLongPress: () {
+                    onPanStart: (_) {
                       sqr.content = Icon(Icons.flag);
                       setState(() {});
                     },
