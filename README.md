@@ -1,3 +1,5 @@
+Learning about Flutter by making easy apps.
+
 # fgame
 
 A new Flutter project.
