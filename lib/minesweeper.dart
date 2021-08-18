@@ -92,7 +92,14 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                   return GestureDetector(
                     onTap: () => _handleTap(x, y),
                     onPanStart: (_) {
-                      sqr.content = Icon(Icons.flag);
+                      if (sqr.isOpened) return;
+                      if (!sqr.isFlagged) {
+                        sqr.content = Icon(Icons.flag);
+                        sqr.isFlagged = true;
+                      } else if (sqr.isFlagged) {
+                        sqr.content = Text("");
+                        sqr.isFlagged = false;
+                      }
                       setState(() {});
                     },
                     child: Container(
@@ -130,7 +137,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
       return;
     }
     BoardSquare sqr = this.board[y][x];
-    if (sqr.isOpened) {
+    if (sqr.isOpened || sqr.isFlagged) {
       return;
     } else if (sqr.hasBomb) {
       this.board.forEach(
@@ -322,6 +329,7 @@ class BoardSquare {
     ),
   );
   bool isOpened = false;
+  bool isFlagged = false;
 
   BoardSquare(
     this.xCoordinate,
