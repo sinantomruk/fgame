@@ -141,7 +141,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
               s.content = s.hasBomb
                   ? Icon(Icons.gps_fixed)
                   : Text(
-                      sqr.bombsAround.toString(),
+                      s.bombsAround.toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 35,
