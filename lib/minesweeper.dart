@@ -75,15 +75,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                         ),
                       ),
                       child: Center(
-                        child: !sqr.hasBomb
-                            ? Text(
-                                sqr.text,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 35,
-                                ),
-                              )
-                            : Icon(Icons.gps_fixed),
+                        child: sqr.content,
                       ),
                     ),
                   );
@@ -105,9 +97,14 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
     if (sqr.isOpened) {
       return;
     } else if (sqr.hasBomb) {
-      _showLoseDialog();
+      setState(() {
+        sqr.isOpened = true;
+        sqr.content = Icon(Icons.gps_fixed);
+      });
+      _showDialog(false);
     } else if (sqr.bombsAround == 0) {
       sqr.isOpened = true;
+      this.squaresLeft -= 1;
       _handleTap(x, y - 1);
       _handleTap(x + 1, y - 1);
       _handleTap(x + 1, y);
@@ -119,8 +116,18 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
     } else {
       setState(() {
         sqr.isOpened = true;
-        sqr.text = sqr.bombsAround.toString();
+        sqr.content = Text(
+          sqr.bombsAround.toString(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 35,
+          ),
+        );
       });
+      this.squaresLeft -= 1;
+      if (this.squaresLeft <= this.bombNumber) {
+        _showDialog(true);
+      }
     }
   }
 
@@ -196,13 +203,46 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
     }
   }
 
-  void _showLoseDialog() {
+  void _clearBoard() {
+    this.squaresLeft = this.columnNumber * this.rowNumber;
+    for (int index = 0; index < this.rowNumber * this.columnNumber; index++) {
+      int x = index % this.columnNumber;
+      int y = index ~/ this.columnNumber;
+      BoardSquare sqr = this.board[y][x];
+      sqr.bombsAround = 0;
+      sqr.hasBomb = false;
+      sqr.isOpened = false;
+      sqr.content = Text(
+        "",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 35,
+        ),
+      );
+    }
+
+    List<int> randomList =
+        List.generate(this.columnNumber * this.rowNumber, (i) => i);
+    randomList.shuffle();
+    for (var i = 0; i < this.bombNumber; i++) {
+      int x = randomList[i] % this.columnNumber;
+      int y = randomList[i] ~/ this.columnNumber;
+
+      this.board[y][x].hasBomb = true;
+      for (var item in this.board[y][x].adjacents) {
+        item.bombsAround += 1;
+      }
+    }
+    setState(() {});
+  }
+
+  void _showDialog(bool isWin) {
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Pressed"),
+          title: isWin ? Text("You won!!!!") : Text("You lost!!"),
           actions: [
             TextButton(
               child: Text(
@@ -210,6 +250,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                 style: TextStyle(color: Colors.pink),
               ),
               onPressed: () {
+                this._clearBoard();
                 Navigator.of(context).pop();
               },
             )
@@ -226,7 +267,13 @@ class BoardSquare {
   bool hasBomb;
   int bombsAround;
   List<BoardSquare> adjacents = [];
-  String text = "";
+  Widget content = Text(
+    "",
+    style: TextStyle(
+      color: Colors.white,
+      fontSize: 35,
+    ),
+  );
   bool isOpened = false;
 
   BoardSquare(
