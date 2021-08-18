@@ -51,7 +51,31 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
         ),
         body: Column(
           children: [
-            Spacer(),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                    child: Text(
+                      "Total bombs: ${this.bombNumber}",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Text(
+                      "Squares left: ${this.squaresLeft}",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               flex: 9,
               child: GridView.builder(
@@ -73,7 +97,9 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: sqr.isOpened ? Colors.deepPurple : Colors.black,
+                        color: !sqr.isOpened
+                            ? Colors.black
+                            : (sqr.hasBomb ? Colors.red : Colors.deepPurple),
                         border: Border.all(
                           color: Theme.of(context).colorScheme.secondary,
                         ),
@@ -86,7 +112,13 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                 },
               ),
             ),
-            Spacer(),
+            Expanded(
+              child: IconButton(
+                onPressed: this._clearBoard,
+                icon: Icon(Icons.restart_alt),
+                iconSize: 32,
+              ),
+            ),
           ],
         ),
       ),
@@ -264,23 +296,12 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
 
   void _showDialog(bool isWin) {
     showDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: isWin ? Text("You won!!!!") : Text("You lost!!"),
-          actions: [
-            TextButton(
-              child: Text(
-                "Play Again",
-                style: TextStyle(color: Colors.pink),
-              ),
-              onPressed: () {
-                this._clearBoard();
-                Navigator.of(context).pop();
-              },
-            )
-          ],
+          actions: [],
         );
       },
     );
