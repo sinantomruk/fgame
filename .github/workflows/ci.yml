@@ -30,7 +30,7 @@ jobs:
         java-version: '11'
     
     # Setup the flutter environment.
-    - uses: subosito/flutter-action@v1.3.2
+    - uses: subosito/flutter-action@v1
       with:
         channel: 'beta'
     
