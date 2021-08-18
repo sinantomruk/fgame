@@ -1,4 +1,5 @@
 import 'package:fgame/minesweeper.dart';
+import 'package:fgame/tictactoe.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +11,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      routes: {
+        "/": (context) => HomeScreen(),
+        "/tictactoe": (context) => TicTacToePage(),
+        "/minesweeper": (context) => MinesweeperPage(8, 12, 16),
+      },
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.pink,
@@ -20,23 +26,44 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.deepPurple,
       ),
       themeMode: ThemeMode.system,
-      home: MinesweeperPage(8, 12, 16),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Fgame"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed("/tictactoe");
+              },
+              child: Text("Tic Tac Toe"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed("/minesweeper");
+              },
+              child: Text("Minesweeper"),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
