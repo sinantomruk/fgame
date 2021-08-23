@@ -1,0 +1,1 @@
+This game's assets are from https://pixel-boy.itch.io/ninja-adventure-asset-pack
