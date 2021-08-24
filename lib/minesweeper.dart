@@ -160,22 +160,15 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
       );
       setState(() {});
       _showDialog(false);
-    } else if (sqr.bombsAround == 0) {
-      sqr.isOpened = true;
-      sqr.content = Text(
-        "",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 35,
-        ),
-      );
-      this.squaresLeft -= 1;
-      sqr.adjacents.forEach((s) {
-        this._handleTap(s.xCoordinate, s.yCoordinate);
-      });
     } else {
-      setState(() {
-        sqr.isOpened = true;
+      sqr.isOpened = true;
+      this.squaresLeft -= 1;
+
+      if (sqr.bombsAround == 0) {
+        sqr.adjacents.forEach((s) {
+          this._handleTap(s.xCoordinate, s.yCoordinate);
+        });
+      } else {
         sqr.content = Text(
           sqr.bombsAround.toString(),
           style: TextStyle(
@@ -183,8 +176,8 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
             fontSize: 35,
           ),
         );
-      });
-      this.squaresLeft -= 1;
+      }
+      setState(() {});
       if (this.squaresLeft <= this.bombNumber) {
         _showDialog(true);
       }
