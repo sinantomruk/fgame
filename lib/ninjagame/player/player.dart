@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:bonfire/bonfire.dart';
 import 'package:fgame/ninjagame/map.dart';
 import 'package:fgame/ninjagame/player/player_sprite_sheet.dart';
+import 'package:fgame/ninjagame/weapons/weapons_sprite_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,11 +44,11 @@ class DarkNinja extends SimplePlayer with Lighting, ObjectCollision {
         collisions: [
           CollisionArea.rectangle(
             size: Size(
+              GameMap.tileSize / 1.2,
               GameMap.tileSize / 2,
-              GameMap.tileSize / 2.2,
             ),
             align: Vector2(
-              GameMap.tileSize / 3.5,
+              GameMap.tileSize / 10,
               GameMap.tileSize / 2,
             ),
           )
@@ -65,25 +67,25 @@ class DarkNinja extends SimplePlayer with Lighting, ObjectCollision {
   void joystickAction(JoystickActionEvent event) {
     if (isDead) return;
 
-    if (event.id == LogicalKeyboardKey.space.keyId &&
-        event.event == ActionEvent.DOWN) {
-      actionAttack();
-    }
+    // if (event.id == LogicalKeyboardKey.space.keyId &&
+    //     event.event == ActionEvent.DOWN) {
+    //   actionAttack();
+    // }
 
     if (event.id == PlayerAttackType.AttackMelee &&
         event.event == ActionEvent.DOWN) {
       actionAttack();
     }
 
-    if (event.id == PlayerAttackType.AttackRange) {
-      if (event.event == ActionEvent.MOVE) {
-        execAttackRange = true;
-        angleRadAttack = event.radAngle;
-      }
-      if (event.event == ActionEvent.UP) {
-        execAttackRange = false;
-      }
-    }
+    // if (event.id == PlayerAttackType.AttackRange) {
+    //   if (event.event == ActionEvent.MOVE) {
+    //     execAttackRange = true;
+    //     angleRadAttack = event.radAngle;
+    //   }
+    //   if (event.event == ActionEvent.UP) {
+    //     execAttackRange = false;
+    //   }
+    // }
 
     super.joystickAction(event);
   }
@@ -91,33 +93,34 @@ class DarkNinja extends SimplePlayer with Lighting, ObjectCollision {
   @override
   void die() {
     remove();
-    gameRef.addGameComponent(
-      GameDecoration.withSprite(
-        Sprite.load('player/crypt.png'),
-        position: Vector2(
-          position.left,
-          position.top,
-        ),
-        height: GameMap.tileSize,
-        width: GameMap.tileSize,
-      ),
-    );
+    // gameRef.addGameComponent(
+    //   GameDecoration.withSprite(
+    //     Sprite.load('player/crypt.png'),
+    //     position: Vector2(
+    //       position.left,
+    //       position.top,
+    //     ),
+    //     height: GameMap.tileSize,
+    //     width: GameMap.tileSize,
+    //   ),
+    // );
     super.die();
   }
 
   void actionAttack() {
-    // if (stamina < 15) return;
+    if (stamina < 15) return;
 
-    // decrementStamina(15);
-    // this.simpleAttackMelee(
-    //   damage: attack,
-    //   animationBottom: CommonSpriteSheet.whiteAttackEffectBottom,
-    //   animationLeft: CommonSpriteSheet.whiteAttackEffectLeft,
-    //   animationRight: CommonSpriteSheet.whiteAttackEffectRight,
-    //   animationTop: CommonSpriteSheet.whiteAttackEffectTop,
-    //   height: GameMap.tileSize,
-    //   width: GameMap.tileSize,
-    // );
+    decrementStamina(15);
+    this.simpleAttackMelee(
+      damage: attack,
+      animationBottom: WeaponsSpriteSheet.lanceAnimation,
+      animationLeft: WeaponsSpriteSheet.lanceAnimation,
+      animationRight: WeaponsSpriteSheet.lanceAnimation,
+      animationTop: WeaponsSpriteSheet.lanceAnimation,
+      height: GameMap.tileSize * 0.8,
+      width: GameMap.tileSize * 0.3,
+    );
+    this.animation?.playOther("attackDown");
   }
 
   void actionAttackRange() {
@@ -147,70 +150,67 @@ class DarkNinja extends SimplePlayer with Lighting, ObjectCollision {
     // );
   }
 
-  // @override
-  // void update(double dt) {
-  //   if (this.isDead) return;
-  //   _verifyStamina(dt);
+  @override
+  void update(double dt) {
+    if (this.isDead) return;
+    _verifyStamina(dt);
 
-  //   this.seeEnemy(
-  //     radiusVision: width * 4,
-  //     notObserved: () {
-  //       showObserveEnemy = false;
-  //     },
-  //     observed: (enemies) {
-  //       if (!showObserveEnemy) {
-  //         showObserveEnemy = true;
-  //         showEmote();
-  //       }
-  //       if (!showTalk) {
-  //         showTalk = true;
-  //         _showTalk(enemies.first);
-  //       }
-  //     },
-  //   );
+    this.seeEnemy(
+      radiusVision: width * 4,
+      notObserved: () {
+        showObserveEnemy = false;
+      },
+      observed: (enemies) {
+        if (!showObserveEnemy) {
+          showObserveEnemy = true;
+          // showEmote();
+        }
+        if (!showTalk) {
+          showTalk = true;
+          // _showTalk(enemies.first);
+        }
+      },
+    );
 
-  //   if (execAttackRange && checkInterval('ATTACK_RANGE', 150, dt)) {
-  //     actionAttackRange();
-  //   }
-  //   super.update(dt);
-  // }
+    if (execAttackRange && checkInterval('ATTACK_RANGE', 150, dt)) {
+      actionAttackRange();
+    }
+    super.update(dt);
+  }
 
-  // @override
-  // void render(Canvas c) {
-  //   _drawDirectionAttack(c);
-  //   if (_rectHover.left != 0 || _rectHover.top != 0) {
-  //     c.drawRect(_rectHover, paintHover);
-  //   }
-  //   super.render(c);
-  // }
+  @override
+  void render(Canvas c) {
+    _drawDirectionAttack(c);
+    super.render(c);
+  }
 
-  // void _verifyStamina(double dt) {
-  //   if (stamina < 100 && checkInterval('INCREMENT_STAMINA', 100, dt)) {
-  //     stamina += 2;
-  //     if (stamina > 100) {
-  //       stamina = 100;
-  //     }
-  //   }
-  // }
+  void _verifyStamina(double dt) {
+    if (stamina < 100 && checkInterval('INCREMENT_STAMINA', 100, dt)) {
+      stamina += 2;
+      if (stamina > 100) {
+        stamina = 100;
+      }
+    }
+  }
 
-  // void decrementStamina(int i) {
-  //   stamina -= i;
-  //   if (stamina < 0) {
-  //     stamina = 0;
-  //   }
-  // }
+  void decrementStamina(int i) {
+    stamina -= i;
+    if (stamina < 0) {
+      stamina = 0;
+    }
+  }
 
-  // @override
-  // void receiveDamage(double damage, dynamic from) {
-  //   this.showDamage(
-  //     damage,
-  //     config: TextPaintConfig(
-  //       fontSize: width / 3,
-  //       color: Colors.red,
-  //     ),
-  //   );
-  //   super.receiveDamage(damage, from);
-  // }
+  @override
+  void receiveDamage(double damage, dynamic from) {
+    this.showDamage(
+      damage,
+      config: TextPaintConfig(
+        fontSize: width / 3,
+        color: Colors.red,
+      ),
+    );
+    super.receiveDamage(damage, from);
+  }
 
   // void showEmote() {
   //   gameRef.add(
@@ -298,26 +298,26 @@ class DarkNinja extends SimplePlayer with Lighting, ObjectCollision {
   //   );
   // }
 
-  // void _drawDirectionAttack(Canvas c) {
-  //   if (execAttackRange) {
-  //     double radius = position.height;
-  //     rectDirectionAttack = Rect.fromLTWH(
-  //       position.center.dx - radius,
-  //       position.center.dy - radius,
-  //       radius * 2,
-  //       radius * 2,
-  //     );
+  void _drawDirectionAttack(Canvas c) {
+    if (execAttackRange) {
+      double radius = position.height;
+      rectDirectionAttack = Rect.fromLTWH(
+        position.center.dx - radius,
+        position.center.dy - radius,
+        radius * 2,
+        radius * 2,
+      );
 
-  //     if (rectDirectionAttack != null && spriteDirectionAttack != null) {
-  //       renderSpriteByRadAngle(
-  //         c,
-  //         angleRadAttack,
-  //         rectDirectionAttack!.toVector2Rect(),
-  //         spriteDirectionAttack!,
-  //       );
-  //     }
-  //   }
-  // }
+      if (rectDirectionAttack != null && spriteDirectionAttack != null) {
+        renderSpriteByRadAngle(
+          c,
+          angleRadAttack,
+          rectDirectionAttack!.toVector2Rect(),
+          spriteDirectionAttack!,
+        );
+      }
+    }
+  }
 
   // @override
   // Future<void> onLoad() async {

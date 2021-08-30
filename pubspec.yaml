@@ -55,7 +55,28 @@ flutter:
     - assets/images/tiledMaps/
     - assets/images/tileSets/
     - assets/images/NinjaAdventure/Actor/Characters/DarkNinja/SeparateAnim/
+    - assets/images/NinjaAdventure/Actor/Monsters/
     - assets/images/NinjaAdventure/Backgrounds/Tilesets/
+    - assets/images/NinjaAdventure/Items/Weapons/Axe/
+    - assets/images/NinjaAdventure/Items/Weapons/BigSword/
+    - assets/images/NinjaAdventure/Items/Weapons/Bone/
+    - assets/images/NinjaAdventure/Items/Weapons/Book/
+    - assets/images/NinjaAdventure/Items/Weapons/Bow/
+    - assets/images/NinjaAdventure/Items/Weapons/Bow2/
+    - assets/images/NinjaAdventure/Items/Weapons/Club/
+    - assets/images/NinjaAdventure/Items/Weapons/Fork/
+    - assets/images/NinjaAdventure/Items/Weapons/Hammer/
+    - assets/images/NinjaAdventure/Items/Weapons/Katana/
+    - assets/images/NinjaAdventure/Items/Weapons/Lance/
+    - assets/images/NinjaAdventure/Items/Weapons/Lance2/
+    - assets/images/NinjaAdventure/Items/Weapons/MagicWand/
+    - assets/images/NinjaAdventure/Items/Weapons/Ninjaku/
+    - assets/images/NinjaAdventure/Items/Weapons/Rapier/
+    - assets/images/NinjaAdventure/Items/Weapons/Sai/
+    - assets/images/NinjaAdventure/Items/Weapons/Stick/
+    - assets/images/NinjaAdventure/Items/Weapons/Sword/
+    - assets/images/NinjaAdventure/Items/Weapons/Sword2/
+    - assets/images/NinjaAdventure/Items/Weapons/Whip/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
